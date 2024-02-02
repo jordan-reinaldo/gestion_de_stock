@@ -39,6 +39,17 @@ class Main:
         self.update_product_button = tk.Button(self.root, text="Modifier un produit", command=self.update_product)
         self.update_product_button.pack(side="left")
 
+        self.show_all_button = tk.Button(self.root, text="Afficher tous les produits", command=self.display_all_products)
+        self.show_all_button.pack(side="left")
+
+         # Bouton pour afficher uniquement les fruits
+        self.show_fruits_button = tk.Button(self.root, text="Afficher les fruits", command=self.display_fruits)
+        self.show_fruits_button.pack(side="left")
+
+        # Bouton pour afficher uniquement les légumes
+        self.show_vegetables_button = tk.Button(self.root, text="Afficher les légumes", command=self.display_vegetables)
+        self.show_vegetables_button.pack(side="left")
+
         self.export_button = tk.Button(self.root, text="Exporter vers CSV", command=self.export_to_csv)
         self.export_button.pack(side="left")
 
@@ -106,6 +117,26 @@ class Main:
             category_id = product[5]  # Obtenez directement l'ID de la catégorie depuis les données du produit
             category_name = self.store.get_category_by_id(category_id)  # Obtenez le nom de la catégorie à partir de l'ID
             self.product_table.insert("", "end", values=(product[0], product[1], product[2], product[3], product[4], category_name))
+
+    def display_fruits(self):
+        # Supprimer les données existantes dans le tableau
+        for item in self.product_table.get_children():
+            self.product_table.delete(item)
+        
+        # Afficher uniquement les fruits
+        fruits = self.store.get_fruits()
+        for fruit in fruits:
+            self.product_table.insert("", "end", values=fruit)
+
+    def display_vegetables(self):
+        # Supprimer les données existantes dans le tableau
+        for item in self.product_table.get_children():
+            self.product_table.delete(item)
+
+        # Afficher uniquement les légumes
+        vegetables = self.store.get_vegetables()
+        for vegetable in vegetables:
+            self.product_table.insert("", "end", values=vegetable)
 
     def export_to_csv(self):
         # Obtenir les produits avec les noms des catégories

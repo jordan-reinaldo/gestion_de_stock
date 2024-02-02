@@ -57,3 +57,11 @@ class Store:
 
     def delete_category(self, id):
         self.category_instance.delete_category(id)
+
+    def get_fruits(self):
+        # Supposons que l'ID de catégorie pour les fruits est 1
+        return self.get_products_by_category(1)
+    
+    def get_vegetables(self):
+        # Supposons que l'ID de catégorie pour les légumes est 2
+        return self.get_products_by_category(2)
