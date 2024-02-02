@@ -31,6 +31,9 @@ class Store:
             return category  # Renvoyer directement l'ID de la catégorie
         else:
             return None
+    
+    def get_products_with_categories(self):
+        return self.product_instance.get_products_with_categories()
         
     def display_products_with_categories(self):
         products = self.product_instance.get_product()  # Obtenir tous les produits

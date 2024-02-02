@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
+import csv
 from Store import Store
+from tkinter import filedialog
 
-class MainApp:
+class Main:
     def __init__(self, root):
         self.root = root
         self.root.title("Gestion de Stock du Magasin")
@@ -36,6 +38,10 @@ class MainApp:
         # Bouton pour modifier un produit
         self.update_product_button = tk.Button(self.root, text="Modifier un produit", command=self.update_product)
         self.update_product_button.pack(side="left")
+
+        self.export_button = tk.Button(self.root, text="Exporter vers CSV", command=self.export_to_csv)
+        self.export_button.pack(side="left")
+
 
         # Afficher initialement tous les produits
         self.display_all_products()
@@ -101,8 +107,33 @@ class MainApp:
             category_name = self.store.get_category_by_id(category_id)  # Obtenez le nom de la catégorie à partir de l'ID
             self.product_table.insert("", "end", values=(product[0], product[1], product[2], product[3], product[4], category_name))
 
+    def export_to_csv(self):
+        # Obtenir les produits avec les noms des catégories
+        products_with_categories = self.store.get_products_with_categories()
+        
+        # Demander à l'utilisateur où enregistrer le fichier CSV
+        file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("Fichiers CSV", "*.csv")])
+        if not file_path:
+            return  # L'utilisateur a annulé l'enregistrement
+
+        try:
+            with open(file_path, mode='w', newline='') as file:
+                writer = csv.writer(file, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+                # Écrire les en-têtes
+                writer.writerow(["ID", "Nom", "Description", "Prix", "Quantité", "Catégorie"])
+
+                # Écrire les données
+                for product in products_with_categories:
+                    # Assurez-vous que l'indice pour le nom de la catégorie est correct
+                    writer.writerow([product[0], product[1], product[2], product[3], product[4], product[-1]])  # Utilisez product[-1] si le nom de la catégorie est le dernier élément
+
+            messagebox.showinfo("Export CSV", "Les données ont été exportées avec succès vers le fichier CSV.")
+        except Exception as e:
+            messagebox.showerror("Erreur d'exportation", f"Une erreur s'est produite lors de l'exportation des données : {str(e)}")
+
 # Création de la fenêtre et lancement de l'application
 if __name__ == "__main__":
     root = tk.Tk()
-    app = MainApp(root)
+    app = Main(root)
     root.mainloop()
