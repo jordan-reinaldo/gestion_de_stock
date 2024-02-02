@@ -37,10 +37,6 @@ class MainApp:
         self.update_product_button = tk.Button(self.root, text="Modifier un produit", command=self.update_product)
         self.update_product_button.pack(side="left")
 
-        # Bouton pour rafraîchir les données du tableau
-        self.refresh_button = tk.Button(self.root, text="Rafraîchir les données", command=self.display_all_products)
-        self.refresh_button.pack(side="left")
-
         # Afficher initialement tous les produits
         self.display_all_products()
 
