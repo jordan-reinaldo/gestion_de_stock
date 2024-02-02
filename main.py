@@ -50,10 +50,9 @@ class MainApp:
         description = simpledialog.askstring("Description", "Entrez la description du produit:")
         price = simpledialog.askfloat("Prix", "Entrez le prix du produit:")
         quantity = simpledialog.askinteger("Quantité", "Entrez la quantité du produit:")
-        category_name = simpledialog.askstring("Catégorie", "Entrez la catégorie du produit:")
+        category_id = simpledialog.askinteger("Catégorie", "Entrez le numéro de catégorie du produit:")
         
-        # Vous devez convertir le nom de la catégorie en ID de catégorie
-        category_id = self.store.get_category_id_by_name(category_name)
+        # Vous n'avez pas besoin de convertir le nom de la catégorie en ID, car vous utilisez l'ID directement
         
         if name and description and price is not None and quantity is not None and category_id is not None:
             self.store.add_product(name, description, price, quantity, category_id)
@@ -102,9 +101,8 @@ class MainApp:
         # Obtenir les produits et les afficher dans le tableau
         products = self.store.get_product()
         for product in products:
-            # Obtenir le nom de la catégorie en utilisant l'ID de catégorie
-            category_name = self.store.get_category_by_id(product[5])  # Obtenir le nom de la catégorie
-            # Insérer les données du produit dans le tableau
+            category_id = product[5]  # Obtenez directement l'ID de la catégorie depuis les données du produit
+            category_name = self.store.get_category_by_id(category_id)  # Obtenez le nom de la catégorie à partir de l'ID
             self.product_table.insert("", "end", values=(product[0], product[1], product[2], product[3], product[4], category_name))
 
 # Création de la fenêtre et lancement de l'application
