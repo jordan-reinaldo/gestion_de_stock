@@ -25,3 +25,12 @@ class Category:
     def delete_category(self, id):
         query = "DELETE FROM category WHERE id = %s"
         self.db.execute(query, (id,))
+
+    def get_category_by_name(self, name):
+        query = "SELECT id FROM category WHERE name = %s"
+        self.db.execute(query, (name,))
+        result = self.db.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None

@@ -24,18 +24,18 @@ class Store:
 
     def get_products_by_category(self, id_category):
         return self.product_instance.get_product_by_category(id_category)
-
-    def get_category_name_by_id(self, id_category):
-        category = self.category_instance.get_category_by_id(id_category)
+    
+    def get_category_id_by_name(self, category_name):
+        category = self.category_instance.get_category_by_name(category_name)
         if category:
-            return category[1]  # Supposons que la colonne 1 contient le nom de la catégorie
+            return category  # Renvoyer directement l'ID de la catégorie
         else:
-            return "Catégorie inconnue"
-
+            return None
+        
     def display_products_with_categories(self):
         products = self.product_instance.get_product()  # Obtenir tous les produits
         for product in products:
-            category_name = self.get_category_name_by_id(product[5])  # Obtenir le nom de la catégorie
+            category_name = self.get_category_id_by_name(product[5])  # Obtenir le nom de la catégorie
             print(f"Catégorie: {category_name}")
 
 

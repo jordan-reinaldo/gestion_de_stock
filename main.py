@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk  # Pour Treeview
+from tkinter import ttk, messagebox, simpledialog
 from Store import Store
 
 class MainApp:
@@ -20,17 +20,79 @@ class MainApp:
         # Définir les en-têtes pour les colonnes
         for col in self.columns:
             self.product_table.heading(col, text=col)
-            self.product_table.column(col, width=100)  # Ajuster la largeur selon le contenu
+            self.product_table.column(col, width=120)  # Ajuster la largeur selon le contenu
 
         # Positionner le tableau dans la fenêtre
         self.product_table.pack(side="top", fill="both", expand=True)
 
-        # Ajouter un bouton pour rafraîchir les données du tableau
+        # Bouton pour ajouter un produit
+        self.add_product_button = tk.Button(self.root, text="Ajouter un produit", command=self.add_product)
+        self.add_product_button.pack(side="left")
+
+        # Bouton pour supprimer un produit
+        self.delete_product_button = tk.Button(self.root, text="Supprimer un produit", command=self.delete_product)
+        self.delete_product_button.pack(side="left")
+
+        # Bouton pour modifier un produit
+        self.update_product_button = tk.Button(self.root, text="Modifier un produit", command=self.update_product)
+        self.update_product_button.pack(side="left")
+
+        # Bouton pour rafraîchir les données du tableau
         self.refresh_button = tk.Button(self.root, text="Rafraîchir les données", command=self.display_all_products)
-        self.refresh_button.pack(side="bottom")
+        self.refresh_button.pack(side="left")
 
         # Afficher initialement tous les produits
         self.display_all_products()
+
+    def add_product(self):
+        # Ici, demandez les détails du produit à l'utilisateur, par exemple avec simpledialog ou un formulaire personnalisé
+        name = simpledialog.askstring("Nom", "Entrez le nom du produit:")
+        description = simpledialog.askstring("Description", "Entrez la description du produit:")
+        price = simpledialog.askfloat("Prix", "Entrez le prix du produit:")
+        quantity = simpledialog.askinteger("Quantité", "Entrez la quantité du produit:")
+        category_name = simpledialog.askstring("Catégorie", "Entrez la catégorie du produit:")
+        
+        # Vous devez convertir le nom de la catégorie en ID de catégorie
+        category_id = self.store.get_category_id_by_name(category_name)
+        
+        if name and description and price is not None and quantity is not None and category_id is not None:
+            self.store.add_product(name, description, price, quantity, category_id)
+            self.display_all_products()  # Rafraîchir la liste des produits
+        else:
+            messagebox.showerror("Erreur", "Informations sur le produit manquantes ou incorrectes.")
+
+    def delete_product(self):
+        selected_item = self.product_table.focus()  # Obtenir l'élément sélectionné
+        if not selected_item:
+            messagebox.showwarning("Attention", "Veuillez sélectionner un produit à supprimer.")
+            return
+        
+        product_id = self.product_table.item(selected_item)['values'][0]
+        self.store.delete_product(product_id)
+        self.display_all_products()  # Rafraîchir la liste des produits
+
+    def update_product(self):
+        selected_item = self.product_table.focus()  # Obtenir l'élément sélectionné
+        if not selected_item:
+            messagebox.showwarning("Attention", "Veuillez sélectionner un produit à modifier.")
+            return
+        
+        product_id = self.product_table.item(selected_item)['values'][0]
+
+        # Vous pouvez demander les nouvelles informations du produit ici
+        new_name = simpledialog.askstring("Nom", "Entrez le nouveau nom du produit:", initialvalue="Nom actuel")
+        new_description = simpledialog.askstring("Description", "Entrez la nouvelle description du produit:", initialvalue="Description actuelle")
+        new_price = simpledialog.askfloat("Prix", "Entrez le nouveau prix du produit:", initialvalue=0.0)
+        new_quantity = simpledialog.askinteger("Quantité", "Entrez la nouvelle quantité du produit:", initialvalue=0)
+        new_category_id = simpledialog.askinteger("Catégorie", "Entrez le nouvel ID de catégorie du produit:", initialvalue=0)
+        # Vérifier que toutes les informations ont été fournies
+        if new_name and new_description and new_price is not None and new_quantity is not None and new_category_id is not None:
+            # Mise à jour du produit
+            self.store.update_product(product_id, new_name, new_description, new_price, new_quantity, new_category_id)
+            self.display_all_products()  # Rafraîchir la liste des produits
+        else:
+            messagebox.showerror("Erreur", "Informations sur le produit manquantes ou incorrectes.")
+
 
     def display_all_products(self):
         # Supprimer les données existantes dans le tableau
@@ -40,8 +102,9 @@ class MainApp:
         # Obtenir les produits et les afficher dans le tableau
         products = self.store.get_product()
         for product in products:
-            category_name = self.store.get_category_name_by_id(product[5])
-            # Ajouter les données du produit dans le tableau
+            # Obtenir le nom de la catégorie en utilisant l'ID de catégorie
+            category_name = self.store.get_category_by_id(product[5])  # Obtenir le nom de la catégorie
+            # Insérer les données du produit dans le tableau
             self.product_table.insert("", "end", values=(product[0], product[1], product[2], product[3], product[4], category_name))
 
 # Création de la fenêtre et lancement de l'application
