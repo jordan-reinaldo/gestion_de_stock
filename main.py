@@ -11,7 +11,6 @@ class Main:
         
         self.store = Store()
 
-        # Créer et placer vos widgets ici
         self.create_widgets()
 
     def create_widgets(self):
@@ -58,14 +57,12 @@ class Main:
         self.display_all_products()
 
     def add_product(self):
-        # Ici, demandez les détails du produit à l'utilisateur, par exemple avec simpledialog ou un formulaire personnalisé
+      
         name = simpledialog.askstring("Nom", "Entrez le nom du produit:")
         description = simpledialog.askstring("Description", "Entrez la description du produit:")
         price = simpledialog.askfloat("Prix", "Entrez le prix du produit:")
         quantity = simpledialog.askinteger("Quantité", "Entrez la quantité du produit:")
         category_id = simpledialog.askinteger("Catégorie", "Entrez le numéro de catégorie du produit:")
-        
-        # Vous n'avez pas besoin de convertir le nom de la catégorie en ID, car vous utilisez l'ID directement
         
         if name and description and price is not None and quantity is not None and category_id is not None:
             self.store.add_product(name, description, price, quantity, category_id)
@@ -97,7 +94,7 @@ class Main:
         new_price = simpledialog.askfloat("Prix", "Entrez le nouveau prix du produit:", initialvalue=0.0)
         new_quantity = simpledialog.askinteger("Quantité", "Entrez la nouvelle quantité du produit:", initialvalue=0)
         new_category_id = simpledialog.askinteger("Catégorie", "Entrez le nouvel ID de catégorie du produit:", initialvalue=0)
-        # Vérifier que toutes les informations ont été fournies
+        # Voir que toutes les informations ont été fournies
         if new_name and new_description and new_price is not None and new_quantity is not None and new_category_id is not None:
             # Mise à jour du produit
             self.store.update_product(product_id, new_name, new_description, new_price, new_quantity, new_category_id)
@@ -114,8 +111,8 @@ class Main:
         # Obtenir les produits et les afficher dans le tableau
         products = self.store.get_product()
         for product in products:
-            category_id = product[5]  # Obtenez directement l'ID de la catégorie depuis les données du produit
-            category_name = self.store.get_category_by_id(category_id)  # Obtenez le nom de la catégorie à partir de l'ID
+            category_id = product[5]  # Obtenir directement l'ID de la catégorie depuis les données du produit
+            category_name = self.store.get_category_by_id(category_id)  # Obtenir le nom de la catégorie à partir de l'ID
             self.product_table.insert("", "end", values=(product[0], product[1], product[2], product[3], product[4], category_name))
 
     def display_fruits(self):
@@ -156,14 +153,13 @@ class Main:
 
                 # Écrire les données
                 for product in products_with_categories:
-                    # Assurez-vous que l'indice pour le nom de la catégorie est correct
+
                     writer.writerow([product[0], product[1], product[2], product[3], product[4], product[-1]])  # Utilisez product[-1] si le nom de la catégorie est le dernier élément
 
             messagebox.showinfo("Export CSV", "Les données ont été exportées avec succès vers le fichier CSV.")
         except Exception as e:
             messagebox.showerror("Erreur d'exportation", f"Une erreur s'est produite lors de l'exportation des données : {str(e)}")
 
-# Création de la fenêtre et lancement de l'application
 if __name__ == "__main__":
     root = tk.Tk()
     app = Main(root)
